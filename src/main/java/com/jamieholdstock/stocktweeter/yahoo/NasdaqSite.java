@@ -1,4 +1,4 @@
-package com.jamieholdstock.stocktweeter.stockchecker;
+package com.jamieholdstock.stocktweeter.yahoo;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,34 +9,43 @@ import java.util.regex.Pattern;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-public class YahooNdqSite {
+import com.jamieholdstock.stocktweeter.stockchecker.Stock;
+import com.jamieholdstock.stocktweeter.stockchecker.StockException;
+
+public class NasdaqSite {
 	
 	private String baseUrl = "https://uk.finance.yahoo.com/q/cp?s=%5EIXIC";
 	private int lastPageId;
 	
-	public YahooNdqSite() throws StockException {
-		YahooNdqPage homePage = getPage(baseUrl);
-		String lastPageUrl = homePage.getLastPageUrl(); 
-		lastPageId = parseUrl(lastPageUrl);
-		getAllPages();
+	public NasdaqSite() throws StockException {
+		NasdaqPage homePage = getPage(baseUrl);
+		for (Stock stock : homePage.getStocks()) {
+			System.out.println(stock);
+		}
+		
+		
+//		String lastPageUrl = homePage.getLastPageUrl(); 
+//		lastPageId = parseUrl(lastPageUrl);
+//		List<NasdaqPage> pages = getAllPages();
+		
 	}
 	
-	private List<YahooNdqPage> getAllPages() throws StockException {
-		List<YahooNdqPage> pages = new ArrayList<YahooNdqPage>();
+	private List<NasdaqPage> getAllPages() throws StockException {
+		List<NasdaqPage> pages = new ArrayList<NasdaqPage>();
 		for (int i = 0; i <= lastPageId; i++) {
 			pages.add(getPage(baseUrl+"&c="+i));
 		}
 		return pages;
 	}
 	
-	private YahooNdqPage getPage(String url) throws StockException {
+	private NasdaqPage getPage(String url) throws StockException {
 		Document doc;
 		try {
 			doc = Jsoup.connect(url).get();
 		} catch (IOException e) {
 			throw new StockException("Couldn't connect to Yahoo website", e);
 		}
-		 return new YahooNdqPage(doc);
+		 return new NasdaqPage(doc);
 	}
 	
 	private int parseUrl(String lastPageUrl) throws StockException {
