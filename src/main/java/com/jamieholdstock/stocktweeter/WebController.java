@@ -1,4 +1,4 @@
-package com.jamieholdstock;
+package com.jamieholdstock.stocktweeter;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
