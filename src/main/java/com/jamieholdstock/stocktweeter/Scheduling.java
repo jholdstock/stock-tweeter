@@ -3,6 +3,7 @@ package com.jamieholdstock.stocktweeter;
 import java.sql.SQLException;
 import java.time.Instant;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -20,19 +21,15 @@ import com.jamieholdstock.stocktweeter.yahoo.NasdaqSite;
 @EnableScheduling
 public class Scheduling {
 	
-	private TwitterFeed twitterFeed;
+	@Autowired private TwitterFeed twitterFeed;
+	@Autowired private Database database;
+	@Autowired private NasdaqSite nasdaqSite;
 	
-	public void setTwitterFeed(TwitterFeed twitterFeed) {
-		this.twitterFeed = twitterFeed;
-	}
-
 	@Scheduled(fixedDelay=1000000)
 	public void checkStock() throws SQLException {
-		
 		Stocks allStocks = null;
 		try {
-			NasdaqSite site = new NasdaqSite();
-			allStocks = site.getAllStocks();
+			allStocks = nasdaqSite.getAllStocks();
 		} 
 		catch (StockException e) {
 			e.printStackTrace();
@@ -48,7 +45,7 @@ public class Scheduling {
 			System.out.println("");
 			System.out.println(stock);
 			
-			if (Database.wasStockAlreadyTweeted(stock)) {
+			if (database.wasStockAlreadyTweeted(stock)) {
 				System.out.println("Found in DB. Already tweeted this stock.");
 				continue;
 			}
@@ -63,7 +60,7 @@ public class Scheduling {
 			}
 			
 			try {
-				Database.insertStockTweet(stock, Instant.now().toString());
+				database.insertStockTweet(stock, Instant.now().toString());
 			} catch (SQLException e) {
 				e.printStackTrace();
 				System.out.println("ERROR: Tweeted but couldn't record in database");

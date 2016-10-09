@@ -3,6 +3,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+	<bean id="database" class="com.jamieholdstock.stocktweeter.Database">
+	</bean>
+	
 	<bean id="twitterFeed" class="com.jamieholdstock.stocktweeter.twitter.TwitterFeed">
 		<constructor-arg value="${twitter.consumerKey}"/>
 		<constructor-arg value="${twitter.consumerSecret}"/>
@@ -10,8 +13,7 @@
 		<constructor-arg value="${twitter.accessTokenSecret}"/>
 	</bean>
 	
-	<bean id="Scheduling" class="com.jamieholdstock.stocktweeter.Scheduling">
-		<property name="twitterFeed" ref="twitterFeed"/>
-	</bean>
-
+	<bean id="nasdaqSite" class="com.jamieholdstock.stocktweeter.yahoo.NasdaqSite">
+	</bean>	
+	
 </beans>

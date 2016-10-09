@@ -9,7 +9,8 @@ import java.sql.Statement;
 import com.jamieholdstock.stocktweeter.stockchecker.Stock;
 
 public class Database {
-	public static void initialise() throws SQLException {
+	
+	public Database() throws SQLException {
 		System.out.println("Initialising database");
 		Connection conn = DriverManager.getConnection("jdbc:sqlite:src/main/resources/test.db");
         Statement stat = conn.createStatement();
@@ -31,7 +32,7 @@ public class Database {
         conn.close();
 	}
 
-	public static boolean wasStockAlreadyTweeted(Stock stock) throws SQLException {
+	public boolean wasStockAlreadyTweeted(Stock stock) throws SQLException {
 		Connection conn = DriverManager.getConnection("jdbc:sqlite:src/main/resources/test.db");
         Statement stat = conn.createStatement();
         String query = "SELECT * FROM stocks WHERE ticker='" + stock.getTicker() + "';";
@@ -44,7 +45,7 @@ public class Database {
         return foundRow;
 	}
 	
-	public static void insertStockTweet(Stock stock, String timestamp) throws SQLException {
+	public void insertStockTweet(Stock stock, String timestamp) throws SQLException {
 		Connection conn = DriverManager.getConnection("jdbc:sqlite:src/main/resources/test.db");
         Statement stat = conn.createStatement();
         String query = "INSERT INTO stocks (ticker, last_tweeted) VALUES('" + stock.getTicker() + "', '" + timestamp +"');";

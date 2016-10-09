@@ -15,13 +15,8 @@ import com.jamieholdstock.stocktweeter.stockchecker.Stocks;
 public class NasdaqSite {
 	
 	private String baseUrl = "https://uk.finance.yahoo.com/q/cp?s=%5EIXIC";
-	private int lastPageId;
 	
 	public NasdaqSite() throws StockException {
-		NasdaqPage homePage = getPage(baseUrl);
-		
-		String lastPageUrl = homePage.getLastPageUrl(); 
-		lastPageId = parseUrl(lastPageUrl);
 	}
 	
 	public Stocks getAllStocks() throws StockException {
@@ -33,8 +28,11 @@ public class NasdaqSite {
 	}
 	
 	private List<NasdaqPage> getAllPages() throws StockException {
+		NasdaqPage homePage = getPage(baseUrl);
 		List<NasdaqPage> pages = new ArrayList<NasdaqPage>();
-		for (int i = 28; i <= 42; i++) {
+		String lastPageUrl = homePage.getLastPageUrl(); 
+		int lastPageId = parseUrl(lastPageUrl);
+		for (int i = 0; i <= lastPageId; i++) {
 			pages.add(getPage(baseUrl+"&c="+i));
 		}
 		return pages;
