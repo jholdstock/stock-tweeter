@@ -34,7 +34,7 @@ public class NasdaqSite {
 	
 	private List<NasdaqPage> getAllPages() throws StockException {
 		List<NasdaqPage> pages = new ArrayList<NasdaqPage>();
-		for (int i = 0; i <= lastPageId; i++) {
+		for (int i = 28; i <= 42; i++) {
 			pages.add(getPage(baseUrl+"&c="+i));
 		}
 		return pages;
