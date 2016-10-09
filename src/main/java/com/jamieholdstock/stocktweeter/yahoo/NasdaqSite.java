@@ -9,8 +9,8 @@ import java.util.regex.Pattern;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import com.jamieholdstock.stocktweeter.stockchecker.Stock;
 import com.jamieholdstock.stocktweeter.stockchecker.StockException;
+import com.jamieholdstock.stocktweeter.stockchecker.Stocks;
 
 public class NasdaqSite {
 	
@@ -19,15 +19,17 @@ public class NasdaqSite {
 	
 	public NasdaqSite() throws StockException {
 		NasdaqPage homePage = getPage(baseUrl);
-		for (Stock stock : homePage.getStocks()) {
-			System.out.println(stock);
+		
+		String lastPageUrl = homePage.getLastPageUrl(); 
+		lastPageId = parseUrl(lastPageUrl);
+	}
+	
+	public Stocks getAllStocks() throws StockException {
+		Stocks stocks = new Stocks();
+		for (NasdaqPage page : getAllPages()) {
+			stocks.addAll(page.getStocks());
 		}
-		
-		
-//		String lastPageUrl = homePage.getLastPageUrl(); 
-//		lastPageId = parseUrl(lastPageUrl);
-//		List<NasdaqPage> pages = getAllPages();
-		
+		return stocks;
 	}
 	
 	private List<NasdaqPage> getAllPages() throws StockException {
@@ -42,8 +44,9 @@ public class NasdaqSite {
 		Document doc;
 		try {
 			doc = Jsoup.connect(url).get();
+			System.out.println("Loaded page succesfully: " + url);			
 		} catch (IOException e) {
-			throw new StockException("Couldn't connect to Yahoo website", e);
+			throw new StockException("Couldn't connect to " + url, e);
 		}
 		 return new NasdaqPage(doc);
 	}
