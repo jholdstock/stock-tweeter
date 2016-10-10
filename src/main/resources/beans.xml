@@ -13,6 +13,9 @@
 		<constructor-arg value="${twitter.accessTokenSecret}"/>
 	</bean>
 	
+	<bean id="nasdaqClient" class="com.jamieholdstock.stocktweeter.yahoo.NasdaqClient">
+	</bean>	
+	
 	<bean id="nasdaqSite" class="com.jamieholdstock.stocktweeter.yahoo.NasdaqSite">
 	</bean>	
 	

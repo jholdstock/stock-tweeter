@@ -1,23 +1,21 @@
 package com.jamieholdstock.stocktweeter.yahoo;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jamieholdstock.stocktweeter.stockchecker.StockException;
 import com.jamieholdstock.stocktweeter.stockchecker.Stocks;
 
 public class NasdaqSite {
 	
-	private String baseUrl = "https://uk.finance.yahoo.com/q/cp?s=%5EIXIC";
+	@Autowired
+	private NasdaqClient client;
 	
-	public NasdaqSite() throws StockException {
-	}
+	public NasdaqSite() {}
 	
 	public Stocks getAllStocks() throws StockException {
 		Stocks stocks = new Stocks();
@@ -28,25 +26,14 @@ public class NasdaqSite {
 	}
 	
 	private List<NasdaqPage> getAllPages() throws StockException {
-		NasdaqPage homePage = getPage(baseUrl);
+		NasdaqPage homePage = client.getHomePage();
 		List<NasdaqPage> pages = new ArrayList<NasdaqPage>();
 		String lastPageUrl = homePage.getLastPageUrl(); 
 		int lastPageId = parseUrl(lastPageUrl);
 		for (int i = 0; i <= lastPageId; i++) {
-			pages.add(getPage(baseUrl+"&c="+i));
+			pages.add(client.getPage("&c="+i));
 		}
 		return pages;
-	}
-	
-	private NasdaqPage getPage(String url) throws StockException {
-		Document doc;
-		try {
-			doc = Jsoup.connect(url).get();
-			System.out.println("Loaded page succesfully: " + url);			
-		} catch (IOException e) {
-			throw new StockException("Couldn't connect to " + url, e);
-		}
-		 return new NasdaqPage(doc);
 	}
 	
 	private int parseUrl(String lastPageUrl) throws StockException {

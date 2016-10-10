@@ -13,6 +13,6 @@ public class TwitterFeed {
 	}
 
 	public void tweetMovedStock(Stock stock) {
-		twitter.timelineOperations().updateStatus(stock.getTicker() + " has moved " + stock.getChange() + "%");
+		twitter.timelineOperations().updateStatus(stock.getTicker() + " has moved " + stock.getChange() + "% https://uk.finance.yahoo.com/q?s=" + stock.getTicker());
 	}
 }
