@@ -1,32 +1,24 @@
-package com.jamieholdstock.stocktweeter;
+package com.jamieholdstock.stocktweeter.scheduled;
 
 import java.sql.SQLException;
 import java.time.Instant;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.social.DuplicateStatusException;
 
+import com.jamieholdstock.stocktweeter.Database;
 import com.jamieholdstock.stocktweeter.stockchecker.Stock;
 import com.jamieholdstock.stocktweeter.stockchecker.StockException;
 import com.jamieholdstock.stocktweeter.stockchecker.Stocks;
 import com.jamieholdstock.stocktweeter.twitter.TwitterFeed;
 import com.jamieholdstock.stocktweeter.yahoo.NasdaqSite;
 
-@Configuration
-@EnableAsync
-@EnableScheduling
-public class Scheduling {
-	
+public class TweetJob extends Job {
 	@Autowired private TwitterFeed twitterFeed;
 	@Autowired private Database database;
 	@Autowired private NasdaqSite nasdaqSite;
 	
-	@Scheduled(fixedDelay=1000000)
-	public void checkStock() throws SQLException {
+	protected void runJob() throws SQLException {
 		Stocks allStocks = null;
 		try {
 			allStocks = nasdaqSite.getAllStocks();
@@ -67,9 +59,5 @@ public class Scheduling {
 				System.exit(1);
 			}
 		}
-		
-		System.out.println("");
-		System.out.println("Scheduled task 'checkStock' complete");
 	}
-	
 }

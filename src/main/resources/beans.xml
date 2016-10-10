@@ -17,6 +17,10 @@
 	</bean>	
 	
 	<bean id="nasdaqSite" class="com.jamieholdstock.stocktweeter.yahoo.NasdaqSite">
-	</bean>	
+	</bean>
 	
+	<bean id="cleanupJob" class="com.jamieholdstock.stocktweeter.scheduled.CleanupJob">
+	</bean>	
+	<bean id="tweetJob" class="com.jamieholdstock.stocktweeter.scheduled.TweetJob">
+	</bean>
 </beans>

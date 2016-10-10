@@ -10,13 +10,17 @@ import com.jamieholdstock.stocktweeter.stockchecker.Stock;
 
 public class Database {
 	
+	private String createTable = "CREATE TABLE stocks (ticker, last_tweeted);";
+	private String emptyTable = "DELETE FROM stocks;";
+	
 	public Database() throws SQLException {
 		System.out.println("Initialising database");
 		Connection conn = DriverManager.getConnection("jdbc:sqlite:src/main/resources/test.db");
         Statement stat = conn.createStatement();
         try {
         	//stat.executeUpdate("drop table if exists stocks;");
-        	stat.executeUpdate("create table stocks (ticker, last_tweeted);");
+        	System.out.println(createTable);
+        	stat.executeUpdate(createTable);
         	System.out.println("Created a new database");
         }
         catch (SQLException e) {
@@ -29,6 +33,16 @@ public class Database {
         	}
         }
 
+        conn.close();
+	}
+	
+	public void emptyStocks() throws SQLException {
+		Connection conn = DriverManager.getConnection("jdbc:sqlite:src/main/resources/test.db");
+        Statement stat = conn.createStatement();
+
+        System.out.println(emptyTable);
+    	stat.executeUpdate(emptyTable);
+    	
         conn.close();
 	}
 
