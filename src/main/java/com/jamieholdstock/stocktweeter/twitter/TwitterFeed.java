@@ -7,12 +7,15 @@ import com.jamieholdstock.stocktweeter.stockchecker.Stock;
 
 public class TwitterFeed {
 	private Twitter twitter;
+	private String urlFormat;
     
-	public TwitterFeed(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret) {
+	public TwitterFeed(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret, String urlFormat) {
 		twitter = new TwitterTemplate(consumerKey, consumerSecret, accessToken, accessTokenSecret);
+		this.urlFormat = urlFormat;
 	}
 
 	public void tweetMovedStock(Stock stock) {
-		twitter.timelineOperations().updateStatus(stock.getTicker() + " has moved " + stock.getChange() + "% https://uk.finance.yahoo.com/q?s=" + stock.getTicker());
+		String fullUrl = urlFormat + stock.getTicker();
+		twitter.timelineOperations().updateStatus(stock.getTicker() + " has moved " + stock.getChange() + "% " + fullUrl);
 	}
 }

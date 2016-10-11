@@ -11,6 +11,7 @@
 		<constructor-arg value="${twitter.consumerSecret}"/>
 		<constructor-arg value="${twitter.accessToken}"/>
 		<constructor-arg value="${twitter.accessTokenSecret}"/>
+		<constructor-arg value="${tweet.urlFormat}"/>
 	</bean>
 	
 	<bean id="nasdaqClient" class="com.jamieholdstock.stocktweeter.yahoo.NasdaqClient">

@@ -30,10 +30,11 @@ public class TweetJob extends Job {
 		}
 		
 		System.out.println("All: " + allStocks.size());
-		System.out.println("Moved: " + allStocks.getMovedStocks().size());
+		Stocks movedStocks = allStocks.getMovedStocks();
+		System.out.println("Moved: " + movedStocks.size());
 		System.out.println("");
 		
-		for (Stock stock : allStocks.getMovedStocks()) {
+		for (Stock stock : movedStocks) {
 			System.out.println("");
 			System.out.println(stock);
 			
