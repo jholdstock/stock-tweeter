@@ -5,6 +5,7 @@ import java.time.Instant;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.DuplicateStatusException;
+import org.springframework.social.RateLimitExceededException;
 
 import com.jamieholdstock.stocktweeter.Database;
 import com.jamieholdstock.stocktweeter.stockchecker.Stock;
@@ -49,6 +50,9 @@ public class TweetJob extends Job {
 			}
 			catch (DuplicateStatusException e) {
 				log.error("ERROR: Already tweeted this. Continuing");
+			}
+			catch(RateLimitExceededException e) {
+				log.error("ERROR: Tweet limit exceeded. Continuing");
 			}
 			
 			database.insertStockTweet(stock, Instant.now().toString());

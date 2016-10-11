@@ -25,8 +25,8 @@ public class Scheduling {
 	private final String tweetCron = "0 */5 9,10,11,12,13,14,15 * * 1,2,3,4,5";
 	private final String cleanCron = "0 30 8 * * *";
 	
-	//@Scheduled(cron=tweetCron, zone="EST")
-	@Scheduled(fixedDelay=100000, zone="EST")
+	@Scheduled(cron=tweetCron, zone="EST")
+	//@Scheduled(fixedDelay=10, zone="EST")
 	public void tweetJob() throws SQLException {
 		tweetJob.run();
 	}
