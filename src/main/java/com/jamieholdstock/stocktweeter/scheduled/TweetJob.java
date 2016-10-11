@@ -25,40 +25,33 @@ public class TweetJob extends Job {
 		} 
 		catch (StockException e) {
 			e.printStackTrace();
-			System.out.print(e.getMessage());
+			log.error(e.getMessage());
 			System.exit(1);
 		}
 		
-		System.out.println("All: " + allStocks.size());
+		log.info("Retrieved " + allStocks.size() + " stocks");
 		Stocks movedStocks = allStocks.getMovedStocks();
-		System.out.println("Moved: " + movedStocks.size());
-		System.out.println("");
-		
+		log.info(movedStocks.size() + " have moved more than 5%");
+
+		Stocks toTweet = new Stocks();
 		for (Stock stock : movedStocks) {
-			System.out.println("");
-			System.out.println(stock);
-			
-			if (database.wasStockAlreadyTweeted(stock)) {
-				System.out.println("Found in DB. Already tweeted this stock.");
-				continue;
+			if (database.wasStockAlreadyTweeted(stock) == false) {
+				toTweet.add(stock);
 			}
-			
-			System.out.println("Will tweet now");
+		}
+
+		log.info(toTweet.size() + " of these have not been tweeted");
+		
+		for (Stock stock : toTweet) {
 			try {
 				twitterFeed.tweetMovedStock(stock);
-				System.out.println("Tweeted");
+				log.info("Tweeted " + stock.toString());
 			}
 			catch (DuplicateStatusException e) {
-				System.out.println("ERROR: Already tweeted this. Continuing");
+				log.error("ERROR: Already tweeted this. Continuing");
 			}
 			
-			try {
-				database.insertStockTweet(stock, Instant.now().toString());
-			} catch (SQLException e) {
-				e.printStackTrace();
-				System.out.println("ERROR: Tweeted but couldn't record in database");
-				System.exit(1);
-			}
+			database.insertStockTweet(stock, Instant.now().toString());
 		}
 	}
 }

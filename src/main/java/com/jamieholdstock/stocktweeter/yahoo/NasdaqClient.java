@@ -4,11 +4,14 @@ import java.io.IOException;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jamieholdstock.stocktweeter.stockchecker.StockException;
 
 public class NasdaqClient {
 	private String baseUrl = "https://uk.finance.yahoo.com/q/cp?s=%5EIXIC";
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	public NasdaqClient() {}
 	
@@ -25,7 +28,7 @@ public class NasdaqClient {
 				break; 
 			}
 			catch (IOException e){
-				System.out.println("NasdaqClient error occurred " + i + " time(s)");
+				log.error("Failed to GET url " + url + " " + i + " time(s)");
 			}                 
 		}
 
@@ -33,7 +36,6 @@ public class NasdaqClient {
 			throw new StockException("Couldn't connect to " + url);
 		}
 		else{
-			System.out.println("Loaded page succesfully: " + url);
 			return new NasdaqPage(doc);
 		}
 

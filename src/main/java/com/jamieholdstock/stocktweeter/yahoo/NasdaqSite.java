@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jamieholdstock.stocktweeter.stockchecker.StockException;
@@ -14,6 +16,7 @@ public class NasdaqSite {
 	
 	@Autowired
 	private NasdaqClient client;
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	public NasdaqSite() {}
 	
@@ -26,13 +29,22 @@ public class NasdaqSite {
 	}
 	
 	private List<NasdaqPage> getAllPages() throws StockException {
+		log.info("Checking how many pages of NASDAQ data to load");
 		NasdaqPage homePage = client.getHomePage();
 		List<NasdaqPage> pages = new ArrayList<NasdaqPage>();
 		String lastPageUrl = homePage.getLastPageUrl(); 
-		int lastPageId = parseUrl(lastPageUrl);
-		for (int i = 0; i <= lastPageId; i++) {
+		
+		int pagesToLoad = parseUrl(lastPageUrl);
+		//int pagesToLoad = 10;
+		
+		log.info("Collecting " + pagesToLoad + " pages");
+		for (int i = 0; i <= pagesToLoad; i++) {
 			pages.add(client.getPage("&c="+i));
+			if (i > 0 && i != pagesToLoad && i%10 == 0) {
+				log.info(i + "/" + pagesToLoad);
+			}
 		}
+		log.info(pagesToLoad + "/" + pagesToLoad);
 		return pages;
 	}
 	
