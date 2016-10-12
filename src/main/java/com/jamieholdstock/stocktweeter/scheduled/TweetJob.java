@@ -25,8 +25,8 @@ public class TweetJob extends Job {
 			allStocks = nasdaqSite.getAllStocks();
 		} 
 		catch (StockException e) {
-			e.printStackTrace();
 			log.error(e.getMessage());
+			e.printStackTrace();
 			System.exit(1);
 		}
 		
@@ -46,13 +46,12 @@ public class TweetJob extends Job {
 		for (Stock stock : toTweet) {
 			try {
 				twitterFeed.tweetMovedStock(stock);
-				log.info("Tweeted " + stock.toString());
 			}
 			catch (DuplicateStatusException e) {
-				log.error("ERROR: Already tweeted this. Continuing");
+				log.warn("Tweet failed: Already tweeted this. Continuing");
 			}
 			catch(RateLimitExceededException e) {
-				log.error("ERROR: Tweet limit exceeded. Continuing");
+				log.warn("Tweet failed: Tweet limit exceeded. Continuing");
 			}
 			
 			database.insertStockTweet(stock, Instant.now().toString());
