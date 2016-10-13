@@ -46,21 +46,19 @@ public class NasdaqPage {
 			String change = td.get(3).text().trim();
 			
 			if ("n/a".equalsIgnoreCase(change)) {
-				log.warn("No change info available for " + ticker + ". Assuming 0.0 and continuing");
 				change = "0.0";
 			}
-			
-			Pattern r = Pattern.compile("^\\S+\\s+\\((\\S+)%\\)");
-			Matcher m = r.matcher(change);
-			if (!m.find( )) {
-				log.warn("Error finding change% for " + ticker + ". Input was '" + change + "'. Assuming 0.0 and continuing");
-				change = "0.0";
-			} 
 			else {
-				change = m.group(1);
+				Pattern r = Pattern.compile("^\\S+\\s+\\((\\S+)%\\)");
+				Matcher m = r.matcher(change);
+				if (!m.find( )) {
+					log.warn("Error finding change% for " + ticker + ". Input was '" + change + "'. Assuming 0.0 and continuing");
+					change = "0.0";
+				} 
+				else {
+					change = m.group(1);
+				}
 			}
-			
-			
 			
 			Elements img = td.get(3).select("img");
 			if (img.size() > 0) {

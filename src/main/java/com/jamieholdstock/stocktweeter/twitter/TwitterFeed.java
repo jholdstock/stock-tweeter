@@ -26,7 +26,7 @@ public class TwitterFeed {
 		if (actuallySend) {
 			String fullUrl = urlFormat + stock.getTicker();
 			try {
-				twitter.timelineOperations().updateStatus(stock.getTicker() + " has moved " + stock.getChange() + "% " + fullUrl);
+				twitter.timelineOperations().updateStatus("Test1: " + stock.getTicker() + " has moved " + stock.getChange() + "% " + fullUrl);
 				log.info("Tweeted " + stock.toString());
 			}
 			catch (DuplicateStatusException e) {
