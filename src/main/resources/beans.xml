@@ -19,6 +19,7 @@
 	</bean>	
 	
 	<bean id="nasdaqClient" class="com.jamieholdstock.stocktweeter.yahoo.NasdaqClient">
+		<constructor-arg value="${nasdaq.url}"/>
 	</bean>	
 	
 	<bean id="nasdaqSite" class="com.jamieholdstock.stocktweeter.yahoo.NasdaqSite">

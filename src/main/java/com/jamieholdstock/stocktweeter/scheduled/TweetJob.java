@@ -4,8 +4,6 @@ import java.sql.SQLException;
 import java.time.Instant;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.social.DuplicateStatusException;
-import org.springframework.social.RateLimitExceededException;
 
 import com.jamieholdstock.stocktweeter.Database;
 import com.jamieholdstock.stocktweeter.stockchecker.Stock;
@@ -19,18 +17,9 @@ public class TweetJob extends Job {
 	@Autowired private Database database;
 	@Autowired private NasdaqSite nasdaqSite;
 	
-	protected void runJob() throws SQLException {
-		Stocks allStocks = null;
-		try {
-			allStocks = nasdaqSite.getAllStocks();
-		} 
-		catch (StockException e) {
-			log.error(e.getMessage());
-			e.printStackTrace();
-			System.exit(1);
-		}
+	protected void runJob() throws SQLException, StockException {
+		Stocks allStocks = nasdaqSite.getAllStocks();
 		
-		log.info("Retrieved " + allStocks.size() + " stocks");
 		Stocks movedStocks = allStocks.getMovedStocks();
 		log.info(movedStocks.size() + " have moved more than 5%");
 
@@ -44,16 +33,7 @@ public class TweetJob extends Job {
 		log.info(toTweet.size() + " of these have not been tweeted");
 		
 		for (Stock stock : toTweet) {
-			try {
-				twitterFeed.tweetMovedStock(stock);
-			}
-			catch (DuplicateStatusException e) {
-				log.warn("Tweet failed: Already tweeted this. Continuing");
-			}
-			catch(RateLimitExceededException e) {
-				log.warn("Tweet failed: Tweet limit exceeded. Continuing");
-			}
-			
+			twitterFeed.tweetMovedStock(stock);
 			database.insertStockTweet(stock, Instant.now().toString());
 		}
 	}

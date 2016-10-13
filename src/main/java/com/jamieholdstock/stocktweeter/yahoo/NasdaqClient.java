@@ -8,11 +8,13 @@ import com.jamieholdstock.stocktweeter.RetryingHttpClient;
 import com.jamieholdstock.stocktweeter.stockchecker.StockException;
 
 public class NasdaqClient {
-	private String baseUrl = "https://uk.finance.yahoo.com/q/cp?s=%5EIXIC";
-	
+
 	@Autowired private RetryingHttpClient httpClient;
+	private String baseUrl;
 	
-	public NasdaqClient() {}
+	public NasdaqClient(String baseUrl) {
+		this.baseUrl = baseUrl;
+	}
 	
 	public NasdaqPage getHomePage() throws StockException {
 		return getPage("");
@@ -23,12 +25,8 @@ public class NasdaqClient {
 		Document doc = null;
 				
 		String html = null;
-		try {
-			html = httpClient.getHttpBody(url);
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
+		
+		html = httpClient.getHttpBody(url);
 		
 		doc = Jsoup.parse(html); 
 

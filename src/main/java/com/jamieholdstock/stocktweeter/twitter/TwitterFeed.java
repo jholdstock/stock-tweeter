@@ -2,6 +2,8 @@ package com.jamieholdstock.stocktweeter.twitter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.social.DuplicateStatusException;
+import org.springframework.social.RateLimitExceededException;
 import org.springframework.social.twitter.api.Twitter;
 import org.springframework.social.twitter.api.impl.TwitterTemplate;
 
@@ -23,8 +25,16 @@ public class TwitterFeed {
 	public void tweetMovedStock(Stock stock) {
 		if (actuallySend) {
 			String fullUrl = urlFormat + stock.getTicker();
-			twitter.timelineOperations().updateStatus(stock.getTicker() + " has moved " + stock.getChange() + "% " + fullUrl);
-			log.info("Tweeted " + stock.toString());
+			try {
+				twitter.timelineOperations().updateStatus(stock.getTicker() + " has moved " + stock.getChange() + "% " + fullUrl);
+				log.info("Tweeted " + stock.toString());
+			}
+			catch (DuplicateStatusException e) {
+				log.warn("Tweet failed: Already tweeted this. Continuing");
+			}
+			catch(RateLimitExceededException e) {
+				log.warn("Tweet failed: Tweet limit exceeded. Continuing");
+			}
 		}
 		else {
 			log.info("Tweeted " + stock.toString() + " (DRY RUN)");

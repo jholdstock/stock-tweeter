@@ -8,6 +8,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import com.jamieholdstock.stocktweeter.stockchecker.StockException;
+
 @Configuration
 @EnableAsync
 @EnableScheduling
@@ -25,14 +27,15 @@ public class Scheduling {
 	private final String tweetCron = "0 */5 9,10,11,12,13,14,15 * * 1,2,3,4,5";
 	private final String cleanCron = "0 30 8 * * *";
 	
-	@Scheduled(cron=tweetCron, zone="EST")
-	//@Scheduled(fixedDelay=10, zone="EST")
-	public void tweetJob() throws SQLException {
+	//@Scheduled(cron=tweetCron, zone="EST")
+	@Scheduled(fixedDelay=10000, zone="EST")
+	public void tweetJob() throws SQLException, StockException {
 		tweetJob.run();
 	}
 	
 	@Scheduled(cron=cleanCron, zone="EST")
-	public void cleanupJob() throws SQLException {
+	//@Scheduled(fixedDelay=10000, zone="EST")
+	public void cleanupJob() throws SQLException, StockException {
 		cleanupJob.run();
 	}
 }

@@ -37,7 +37,7 @@ public class NasdaqSite {
 		}
 		
 		log.info(pagesToLoad + "/" + pagesToLoad);
-
+		log.info("Retrieved " + stocks.size() + " stocks");
 		return stocks;
 	}
 	
