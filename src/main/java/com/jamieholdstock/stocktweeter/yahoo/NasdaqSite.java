@@ -1,7 +1,5 @@
 package com.jamieholdstock.stocktweeter.yahoo;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,30 +20,25 @@ public class NasdaqSite {
 	
 	public Stocks getAllStocks() throws StockException {
 		Stocks stocks = new Stocks();
-		for (NasdaqPage page : getAllPages()) {
-			stocks.addAll(page.getStocks());
-		}
-		return stocks;
-	}
-	
-	private List<NasdaqPage> getAllPages() throws StockException {
-		log.info("Checking how many pages of NASDAQ data to load");
+		
 		NasdaqPage homePage = client.getHomePage();
-		List<NasdaqPage> pages = new ArrayList<NasdaqPage>();
 		String lastPageUrl = homePage.getLastPageUrl(); 
 		
 		int pagesToLoad = parseUrl(lastPageUrl);
 		//int pagesToLoad = 10;
 		
-		log.info("Collecting " + pagesToLoad + " pages");
+		log.info("Collecting " + pagesToLoad + " pages of NASDAQ data");
 		for (int i = 0; i <= pagesToLoad; i++) {
-			pages.add(client.getPage("&c="+i));
+			NasdaqPage page = client.getPage("&c="+i);
+			stocks.addAll(page.getStocks());
 			if (i > 0 && i != pagesToLoad && i%10 == 0) {
 				log.info(i + "/" + pagesToLoad);
 			}
 		}
+		
 		log.info(pagesToLoad + "/" + pagesToLoad);
-		return pages;
+		log.info("Retrieved " + stocks.size() + " stocks");
+		return stocks;
 	}
 	
 	private int parseUrl(String lastPageUrl) throws StockException {

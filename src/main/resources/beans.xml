@@ -12,9 +12,14 @@
 		<constructor-arg value="${twitter.accessToken}"/>
 		<constructor-arg value="${twitter.accessTokenSecret}"/>
 		<constructor-arg value="${tweet.urlFormat}"/>
+		<constructor-arg value="${tweet.actuallySend}"/>
 	</bean>
 	
+	<bean id="retryingHttpClient" class="com.jamieholdstock.stocktweeter.RetryingHttpClient">
+	</bean>	
+	
 	<bean id="nasdaqClient" class="com.jamieholdstock.stocktweeter.yahoo.NasdaqClient">
+		<constructor-arg value="${nasdaq.url}"/>
 	</bean>	
 	
 	<bean id="nasdaqSite" class="com.jamieholdstock.stocktweeter.yahoo.NasdaqSite">
@@ -22,6 +27,8 @@
 	
 	<bean id="cleanupJob" class="com.jamieholdstock.stocktweeter.scheduled.CleanupJob">
 	</bean>	
+	
 	<bean id="tweetJob" class="com.jamieholdstock.stocktweeter.scheduled.TweetJob">
 	</bean>
+	
 </beans>

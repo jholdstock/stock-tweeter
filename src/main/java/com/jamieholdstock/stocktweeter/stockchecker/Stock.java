@@ -23,10 +23,6 @@ public class Stock {
 	}
 	
 	public boolean hasMoved5() {
-		// N/A in the change% column indicates a stock was only added to the market today.
-		if ("N/A".equalsIgnoreCase(change)) {
-			return false;
-		}
 		Double d = Double.parseDouble(change);
 		return (d >= 5.0d || d <= -5.0d);
 	}

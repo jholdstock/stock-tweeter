@@ -6,6 +6,8 @@ import java.util.regex.Pattern;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jamieholdstock.stocktweeter.stockchecker.Stock;
 import com.jamieholdstock.stocktweeter.stockchecker.StockException;
@@ -14,6 +16,7 @@ import com.jamieholdstock.stocktweeter.stockchecker.Stocks;
 public class NasdaqPage {
 
 	private Document doc;
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	public NasdaqPage(Document doc) {
 		this.doc = doc;
@@ -42,15 +45,21 @@ public class NasdaqPage {
 			String ticker = td.get(0).text().trim();
 			String change = td.get(3).text().trim();
 			
-			Pattern r = Pattern.compile("^\\S+\\s+\\((\\S+)%\\)");
-			
-			Matcher m = r.matcher(change);
-			if (!m.find( )) {
-				throw new StockException(String.format("Couldn't find change percent"));
+			if ("n/a".equalsIgnoreCase(change)) {
+				change = "0.0";
+			}
+			else {
+				Pattern r = Pattern.compile("^\\S+\\s+\\((\\S+)%\\)");
+				Matcher m = r.matcher(change);
+				if (!m.find( )) {
+					log.warn("Error finding change% for " + ticker + ". Input was '" + change + "'. Assuming 0.0 and continuing");
+					change = "0.0";
+				} 
+				else {
+					change = m.group(1);
+				}
 			}
 			
-			change = m.group(1);
-
 			Elements img = td.get(3).select("img");
 			if (img.size() > 0) {
 				String alt = img.attr("alt");
